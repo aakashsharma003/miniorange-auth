@@ -1,7 +1,7 @@
 const OTP = require("../models/otp.model")
 const nodemailer = require("nodemailer")
 const User = require("../models/user.model")
-
+const { generateTokens } = require("../utils/logger")
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.example.com",
@@ -90,10 +90,8 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-    // Find OTP in MongoDB
     const otpRecord = await OTP.findOne({ email });
 
-    // Check if OTP exists
     if (!otpRecord) {
       return res.status(400).json({
         success: false,
@@ -101,7 +99,6 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-    // Check if OTP is expired
     if (Date.now() > otpRecord.expiresAt) {
       await OTP.deleteOne({ _id: otpRecord._id });
       return res.status(400).json({
@@ -110,7 +107,6 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-    // Check if OTP matches
     if (otpRecord.otp !== otp) {
       return res.status(400).json({
         success: false,
@@ -118,10 +114,8 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-    // OTP is valid, delete it
     await OTP.deleteOne({ _id: otpRecord._id });
 
-    // ✅ Find user and generate tokens
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -131,7 +125,9 @@ exports.verifyOTP = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
+    
     user.refreshToken = refreshToken;
+    user.isVerified = true; // ✅ mark user as verified
     await user.save();
 
     return res.status(200).json({
@@ -141,9 +137,10 @@ exports.verifyOTP = async (req, res) => {
       refreshToken,
       user: {
         id: user._id,
-        name:user.name,
+        name: user.name,
         username: user.username,
         email: user.email,
+        verified: user.isVerified,
       },
     });
   } catch (error) {

@@ -32,7 +32,7 @@ export default function OAuthCallbackPage() {
   }, [searchParams, navigate]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-[#f69247]">
       <div className="max-w-md w-full text-center">
         <h1 className="text-2xl font-bold mb-4">Processing Authentication</h1>
         <p className="text-muted-foreground">Please wait while we complete your login...</p>

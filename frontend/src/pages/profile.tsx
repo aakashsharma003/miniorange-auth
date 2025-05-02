@@ -11,7 +11,8 @@ import {
 } from "../components/ui/card";
 import { ProfileForm } from "../components/profile-form";
 import { toast } from "react-hot-toast";
-import { Mail } from "lucide-react"; // 
+import { Mail } from "lucide-react";
+
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
@@ -45,7 +46,6 @@ export default function ProfilePage() {
 
         const data = await response.json();
         setProfile(data.user);
-        console.log("data",data.user);
       } catch (error) {
         toast.error("Failed to load profile data");
       } finally {
@@ -64,7 +64,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-[#f69247]">
         <div className="max-w-md w-full text-center">
           <p>Loading profile...</p>
         </div>
@@ -73,11 +73,18 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-[#f69247]">
       <div className="max-w-md w-full">
-        <Card className="w-full">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
+        <Card className="w-full bg-white">
+          <CardHeader className="space-y-3">
+            <div className="flex justify-center">
+            <img
+              src="https://www.miniorange.com/images/logo/miniorange-logo.webp"
+              alt="MiniOrange Logo"
+              className="h-12"
+            />
+            </div>
+            <CardTitle className="text-2xl font-bold text-center text-black">
               User Profile
             </CardTitle>
             <CardDescription className="text-center">
@@ -85,38 +92,37 @@ export default function ProfilePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-  {profile ? (
-    <>
-      {/* Profile Summary Section */}
-      <div className="mb-4 space-y-1 text-center">
-        <h2 className="text-xl font-semibold text-gray-800">{profile.username}</h2>
-        <p className="text-sm text-gray-500">{profile.email}</p>
+            {profile ? (
+              <>
+                <div className="mb-4 space-y-1 text-center">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Welcome,   {profile?.profile?.name || "User"} 
+                  </h2>
+                  <p className="text-sm text-gray-500">{profile.email}</p>
 
-        {/* Match Check */}
-        {(() => {
-          const emailPrefix = profile.email?.split("@")[0]?.slice(0, 4)?.toLowerCase();
-          const nameIncludes = profile?.profile?.name?.toLowerCase().includes(emailPrefix);
-          const usernameIncludes = profile.username?.toLowerCase().includes(emailPrefix);
+                  {(() => {
+                    const emailPrefix = profile.email?.split("@")[0]?.slice(0, 4)?.toLowerCase();
+                    const nameIncludes = profile?.profile?.name?.toLowerCase().includes(emailPrefix);
+                    const usernameIncludes = profile.username?.toLowerCase().includes(emailPrefix);
 
-          if (emailPrefix && (nameIncludes || usernameIncludes)) {
-            return (
-              <div className="flex items-center justify-center gap-2 mt-1 text-green-600 text-sm">
-                <Mail size={16} />
-                <span>Username</span>
-              </div>
-            );
-          }
-          return null;
-        })()}
-      </div>
+                    if (emailPrefix && (nameIncludes || usernameIncludes)) {
+                      return (
+                        <div className="flex items-center justify-center gap-2 mt-1 text-green-600 text-sm">
+                          <Mail size={16} />
+                          <span>Username</span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
 
-      {/* Profile Form */}
-      <ProfileForm profile={profile} />
-    </>
-  ) : (
-    <p className="text-center text-muted-foreground">No profile data available</p>
-  )}
-</CardContent>
+                <ProfileForm profile={profile} />
+              </>
+            ) : (
+              <p className="text-center text-muted-foreground">No profile data available</p>
+            )}
+          </CardContent>
 
           <CardFooter className="flex justify-center">
             <Button variant="outline" onClick={handleLogout}>

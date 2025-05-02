@@ -26,7 +26,16 @@ function EmailVerification() {
   const [success, setSuccess] = useState<string | null>(null);
   const [canResend, setCanResend] = useState(true);
   const [verified, setVerified] = useState(false);
-
+ 
+  useEffect(() => {
+    if (verified) {
+      const timer = setTimeout(() => {
+        window.location.href = "/profile";
+      }, 1500); 
+      return () => clearTimeout(timer);
+    }
+  }, [verified]);
+  
   const handleSendOTP = async () => {
     if (!email) return setError("Please enter your email address");
 
@@ -59,9 +68,12 @@ function EmailVerification() {
 
     try {
       const result = await verifyOTP(email, otp);
+
       if (result.success) {
         setSuccess("Email verified successfully!");
         setVerified(true);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('refreshtoken', result.refreshtoken);
       } else {
         setError("Invalid OTP. Please try again.");
       }
@@ -93,7 +105,7 @@ function EmailVerification() {
   }, [email]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-[#f69247]">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Email Verification</CardTitle>
