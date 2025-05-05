@@ -29,7 +29,7 @@ export default function ProfilePage() {
       }
 
       try {
-        const response = await fetch("http://localhost:5000/profile", {
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND_API}/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

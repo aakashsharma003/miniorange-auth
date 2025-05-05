@@ -28,7 +28,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         throw new Error("Not authenticated");
       }
 
-      const response = await fetch("http://localhost:5000/profile", {
+      const response = await fetch(`${import.meta.env.VITE_APP_BACKEND_API}/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

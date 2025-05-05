@@ -10,7 +10,7 @@ export function SocialLogin() {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true)
     try {
-      window.location.href = "http://localhost:5000/auth/google"
+      window.location.href = `${import.meta.env.VITE_APP_BACKEND_API}/auth/google`
     } catch (error) {
       toast.error("Failed to connect with Google")  // Error toast for Google login
       setIsGoogleLoading(false)
@@ -20,7 +20,7 @@ export function SocialLogin() {
   const handleFacebookLogin = async () => {
     setIsFacebookLoading(true)
     try {
-      window.location.href = "http://localhost:5000/auth/facebook"
+      window.location.href = `${import.meta.env.VITE_APP_BACKEND_API}/auth/facebook`
     } catch (error) {
       toast.error("Failed to connect with Facebook")  // Error toast for Facebook login
       setIsFacebookLoading(false)
